@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html ng-app='notesApp'>
+<head>
+    <title>P.30</title>
+    <script src='../angular.min.js'></script>
+</head>
+<body ng-controller='MainCtrl as ctrl'>
+	<div ng-repeat='note in ctrl.notes'>
+		<div>index: {{$index}}</div>
+		<div>isFirst: {{$first}}</div>
+		<div>isMiddle: {{$middle}}</div>
+		<div>isLast: {{$last}}</div>		
+		<div>isEven: {{$even}}</div>
+		<div>isOdd: {{$odd}}</div>
+		<span class='label'>{{note.label}}</span>
+		<span class='status' ng-bind='note.done'></span>
+		<br/><br/>
+	</div>	
+	<script type='text/javascript'>
+		angular.module('notesApp', []).controller('MainCtrl', [function() {
+			var self = this;
+			self.notes = [
+				{id: 1, label: 'First Note', done: false},
+				{id: 2, label: 'Second Note', done: false},
+				{id: 3, label: 'Done Note', done: true},
+				{id: 4, label: 'Last Note', done: false}
+			];
+		}]);	
+	</script>
+</body>
+</html>
