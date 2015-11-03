@@ -6,13 +6,13 @@
 </head>
 <body ng-controller='MainCtrl as ctrl'>
 	<div ng-repeat='note in ctrl.notes'>
-		<div>index: {{$index}}</div>
-		<div>isFirst: {{$first}}</div>
-		<div>isMiddle: {{$middle}}</div>
-		<div>isLast: {{$last}}</div>		
-		<div>isEven: {{$even}}</div>
-		<div>isOdd: {{$odd}}</div>
-		<span class='label'>{{note.label}}</span>
+		<div>index: {{ $index }}</div>
+		<div>isFirst: {{ $first }}</div>
+		<div>isMiddle: {{ $middle }}</div>
+		<div>isLast: {{ $last }}</div>		
+		<div>isEven: {{ $even }}</div>
+		<div>isOdd: {{ $odd }}</div>
+		<span class='label'>{{ note.label }}</span>
 		<span class='status' ng-bind='note.done'></span>
 		<br/><br/>
 	</div>	
