@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html ng-app="notesApp">
+<head>
+    <title>P.61</title>
+    <script src="../angular.min.js"></script>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+	<form ng-submit="ctrl.submit()" name="myForm">
+		<input type="text" name="username" ng-model="ctrl.user.username" required ng-minlength="4">
+		<span ng-show="myForm.username.$error.required">This is a required field</span>
+		<span ng-show="myForm.username.$error.minlength">Minimum length required is 4</span>
+		<span ng-show="myForm.username.$invalid">This field is invalid</span>
+		<input type="password" name="password" ng-model="ctrl.user.password" required>
+		<span ng-show="myForm.password.$error.required">This is a required field</span>	
+		<input type="submit" value="Submit" ng-disabled="myForm.$invalid">		
+	</form>
+	<script type="text/javascript">
+		angular.module("notesApp", []).controller("MainCtrl", [function() {
+			var self = this;
+			self.submit = function() {				
+				console.log("User clicked submit with", self.user.username, self.user.password);
+			};
+			self.reset = function() {
+				self.user.username = "";
+				self.user.password = "";
+			};
+		}]);
+	</script>
+</body>
+</html>
