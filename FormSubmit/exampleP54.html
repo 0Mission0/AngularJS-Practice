@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html ng-app="notesApp">
+<head>
+    <title>P.54</title>
+    <script src="../angular.min.js"></script>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+	<input type="text" ng-model="ctrl.username">
+	<input type="password" ng-model="ctrl.password">
+	<button ng-click="ctrl.change()">Change Values</button>
+	<button ng-click="ctrl.submit()">Submit</button>
+	<script type="text/javascript">
+		angular.module("notesApp", []).controller("MainCtrl", [function() {
+			var self = this;
+			self.change = function() {
+				self.username = "changed";
+				self.password = "password";
+			};
+			self.submit = function() {
+				console.log("User clicked submit with", self.username, self.password);
+			};
+		}]);	
+	</script>
+</body>
+</html>
