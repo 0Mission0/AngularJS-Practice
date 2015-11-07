@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html ng-app="notesApp">
+<head>
+    <title>P.65</title>
+    <script src="../angular.min.js"></script>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+    <form novalidate  ng-submit="ctrl.submit()" name="myForm">
+        <input type="text" class="username"
+                  ng-model="ctrl.user.username"
+                  placeholder="Username"
+                  ng-minlength="4"
+        />
+        <input type="password" class="password"
+                  ng-model="ctrl.user.password"
+                  placeholder="Password"
+        /><br/>
+        <ng-form name="profile">
+            <input type="text" name="firstName"
+                ng-model="ctrl.user.profile.firstName"
+                placeholder="First Name"
+                required
+            /><br/>
+            <input type="text" name="middleName"
+                ng-model="ctrl.user.profile.middleName"
+                placeholder="Middle Name"
+                required
+            /><br/>
+            <input type="text" name="lastName"
+                ng-model="ctrl.user.profile.lastName"
+                placeholder="Last Name"
+                required
+            /><br/>
+            <input type="date" name="dob"
+                ng-model="ctrl.user.profile.dob"
+                placeholder="Date of Birth"
+                required
+            /><br/>            
+        </ng-form>
+        <span ng-show="myForm.profile.$invalid">
+            Please fill out the profile information
+        </span>
+        <!-- Notice that the true value is "'Yes'", double quoted with 'String' -->
+        <input type="checkbox" name="agree"
+            ng-model="ctrl.user.agree"
+            ng-true-value="'YES'"
+            ng-false-value="'NO'"
+        />
+        <input type="submit" value="Submit" ng-disabled="myForm.$invalid"/>
+    </form>
+    <script type="text/javascript">
+        angular.module("notesApp", []).controller("MainCtrl", [function() {
+            var self = this;
+            self.submit = function() {
+                console.log("User clicked submit with", self.user);
+            };
+        }]);
+    </script>
+</body>
+</html>

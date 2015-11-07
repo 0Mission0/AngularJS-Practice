@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html ng-app="notesApp">
+<head>
+    <title>P.63</title>
+	<style>
+		.username.ng-valid {
+			background-color: green;
+		}
+		.username.ng-dirty.ng-invalid-required {
+			background-color: red;
+		}
+		.username.ng-dirty.ng-invalid-minlength {
+			background-color: lightpink;
+		}
+	</style>
+    <script src="../angular.min.js"></script>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+	<form ng-submit="ctrl.submit()" name="myForm">
+		<input type="text" class="username"
+				  ng-model="ctrl.user.username" 
+				  required 
+				  ng-minlength="4"
+		/>
+		<input type="submit" value="Submit" ng-disabled="myForm.$invalid"/>
+	</form>
+	<script type="text/javascript">
+		angular.module("notesApp", []).controller("MainCtrl", [function() {
+			var self = this;
+			self.submit = function() {
+				console.log("User clicked submit with", self.user.username);
+			};
+		}]);
+	</script>
+</body>
+</html>
