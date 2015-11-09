@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html ng-app="notesApp">
+<head>
+    <title>P.70</title>
+    <script src="../angular.min.js"></script>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+    <div ng-init="user = {gender: 'female'}">
+        What's your gender:
+        <input type="radio" name="gender" ng-model="user.gender" value="male">
+        <input type="radio" name="gender" ng-model="user.gender" value="female">
+    </div>
+    <div>{{ user.gender }}</div>
+    <br/>
+    <div ng-init="otherGender = 'other'">
+        What's your gender:
+        <input type="radio" name="gender" ng-model="user.gender" value="male">
+        <input type="radio" name="gender" ng-model="user.gender" value="female">
+        <!-- male, female are fixed string, otherGender is a variable. You can dynamically set it. -->
+        <input type="radio" name="gender" ng-model="user.gender" ng-value="otherGender">{{ otherGender }}
+    </div>
+    <div>{{ user.gender }}</div>
+    <br/>
+    <!-- But this example need a fixed value, India-->
+    <div ng-init="location = 'India'">
+        <select ng-model="location">
+            <!-- and all the options value must be fixed. Is there anyway to dynamically set it? -->
+            <option value="USA">USA</option>
+            <option value="India">India</option>
+            <option value="Other">None of the above</option>
+        </select>
+    </div>    
+    <div>{{ location }}</div>
+    <br/>
+    <div>
+        <select ng-model="ctrl.selectedCountryId" ng-options="c.id as c.label for c in ctrl.countries">            
+        </select>
+        Selected Country ID: {{ ctrl.selectedCountryId }}
+    </div>
+    <div>
+        <select ng-model="ctrl.selectedCountryId" ng-options="c.label for c in ctrl.countries">            
+        </select>
+        Selected Country ID: {{ ctrl.selectedCountry }}
+    </div>
+	<script type="text/javascript">
+		angular.module("notesApp", []).controller("MainCtrl", [function() {
+			var self = this;
+            self.countries = [
+                {label: "USA", id: 1},
+                {label: "India", id: 2},
+                {label: "Other", id: 3},
+            ];
+            self.selectedCountryId = 2;
+            self.selectedCountry = self.countries[1];
+		}]);
+	</script>
+</body>
+</html>
