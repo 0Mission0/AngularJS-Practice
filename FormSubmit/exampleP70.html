@@ -40,7 +40,12 @@
     <div>
         <select ng-model="ctrl.selectedCountry" ng-options="c.label for c in ctrl.countries">
         </select>
-        Selected Country ID: {{ ctrl.selectedCountry }}
+        Selected Country: {{ ctrl.selectedCountry }}
+    </div>
+    <div>
+        <select ng-model="ctrl.selectedCountryLabel" ng-options="c.label as c.label for c in ctrl.countries">
+        </select>
+        Selected Country Label: {{ ctrl.selectedCountryLabel }}
     </div>
 	<script type="text/javascript">
 		angular.module("notesApp", []).controller("MainCtrl", [function() {
@@ -52,6 +57,7 @@
             ];
             self.selectedCountryId = 2;
             self.selectedCountry = self.countries[1];
+            self.selectedCountryLabel = "India";
 		}]);
 	</script>
 </body>
