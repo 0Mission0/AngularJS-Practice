@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html ng-app="notesApp">
+<head>
+    <title>P.81</title>
+    <script src="../angular.min.js"></script>
+</head>
+<body ng-controller="MainCtrl as mainCtrl">
+    <h1>Log Service</h1>
+    <button ng-click="mainCtrl.addLog()">Log Something</button>
+	<script type="text/javascript">
+		angular.module("notesApp", []).controller("MainCtrl", ["$log", function($log) {
+			var self = this;
+            self.addLog = function() {
+                $log.log("The button was pressed.");
+            };
+		}]);
+	</script>
+</body>
+</html>
