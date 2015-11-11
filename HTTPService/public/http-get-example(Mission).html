@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html ng-app="notesApp">
+<head>
+    <title>P.91</title>
+    <script src="angular.min.js"></script>
+    <style>
+        .item {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Hello Servers!</h1>
+        <h2>Load data from local memory</h2>
+        <span ng-controller="LocalCtrl as ctrl">
+            <div ng-repeat="item in ctrl.items" class="item">            
+                <span>
+                    {"{{ item.author }}", {{ item.label }} }
+                </span>
+            </div>
+         </span>
+        <h2>Load data from Server(GET)</h2>
+        <span ng-controller="RemoteCtrl as ctrl">
+            <div ng-repeat="item in ctrl.items" class="item">            
+                <span>
+                    {"{{ item.author }}", {{ item.label }} }
+                </span>
+            </div>
+        </span>
+    </div>
+	<script type="text/javascript">
+		angular.module("notesApp", []).controller("LocalCtrl", [function() {
+			var self = this;
+			self.items = [
+                {label: "Basketball", author: "Tester"},
+                {label: "Cricket", author: "Tester"},
+                {label: "Socker", author: "Tester"},
+                {label: "Swimming", author: "Tester"}
+            ];
+		}]);
+        angular.module("notesApp").controller("RemoteCtrl", ["$http", function($http) {
+            var self = this;
+            self.items = [];
+            $http.get("/api/note").then(function(response) {
+                self.items = response.data;
+            }, function(errResponse) {
+                console.error("Error while fetching notes");
+            });
+        }]);
+	</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <title>Same Get Action By JQuery</title>
+    <script src='https://code.jquery.com/jquery-2.1.4.min.js'></script>
+</head>
+<body>
+    Check F12 console.log();
+</body>
+<script>
+    $.get("/api/note", function( data ) {
+        console.log(data);
+        alert("Load was performed.");
+    });
+</script>
+</html>

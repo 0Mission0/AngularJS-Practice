@@ -1,0 +1,4 @@
+Remember to Install Node.js
+And type such command in cmd.
+
+Node Server.js
