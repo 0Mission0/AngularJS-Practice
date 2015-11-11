@@ -1,0 +1,48 @@
+<html ng-app="notesApp">
+<head>
+    <title>HTTP Post Example</title>
+    <script src="angular.min.js"></script>
+    <style>
+        .item {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+    <h1>Hello Servers(Post)!</h1>
+    <div>
+        <form name="addForm" ng-submit="ctrl.add()">
+            <input type="text" placeholder="Label" ng-model="ctrl.newTodo.label" required>
+            <input type="text" placeholder="Author" ng-model="ctrl.newTodo.author" required>
+            <input type="submit" value="Add" ng-disabled="addForm.$invalid">
+        </form>
+    </div>
+    <div ng-repeat="item in ctrl.items" class="item">
+        <div>
+            {"<span ng-bind="item.label"></span>", <span ng-bind="item.author"></span>}
+        </div>
+    </div>
+</body>
+<script>
+    angular.module("notesApp", []).controller("MainCtrl", ["$http", function($http) {
+        var self = this;
+        self.items = [];
+        function fetchData() {
+            $http.get("/api/note").then(function(response) {
+                self.items = response.data;
+            }, function(error) {
+                alert("HTTP GET Error!");
+            });
+        }
+        fetchData();
+        self.newTodo = {};
+        self.add = function() {
+            console.log(self.newTodo);
+            $http.post("/api/note", self.newTodo).then(fetchData).then(function(response) {
+                //Do we need this line?
+                self.newTodo = {};
+            });
+        };
+    }]);
+</script>
+</html>
