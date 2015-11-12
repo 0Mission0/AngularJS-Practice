@@ -1,0 +1,79 @@
+<!-- File: chapter6/public/http-defaults.html -->
+<html ng-app="notesApp">
+<head>
+    <title>HTTP Default Example</title>
+    <script src="angular.min.js"></script>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+    <h1>Hello Http Default!</h1>
+    <div>
+        <div ng-bind="ctrl.loginMessage"></div>
+        <form name="form" ng-submit="ctrl.login()">
+            <input type="text" placeholder="Username" ng-model="ctrl.user.username" required>
+            <input type="password" placeholder="Password" ng-model="ctrl.user.password" required>
+            <input type="submit" value="Login" ng-disabled="form.$invalid">
+        </form>
+    </div>
+</body>
+<script>
+    // Local Test
+    //angular.module("notesApp", []).controller("MainCtrl", function() {
+    //    var self = this;
+    //    self.user = {};
+    //    self.loginMessage = "";
+    //    self.login = function() {
+    //        self.loginMessage = self.user.username + " " + self.user.password;
+    //    }
+    //});
+
+    // Http post without Config
+    // This will post a json object: {"username":"Mission","password":"Test"}
+    //angular.module("notesApp", []).controller("MainCtrl", ["$http", function($http) {
+    //    var self = this;
+    //    self.user = {};
+    //    self.loginMessage = "";
+    //    self.login = function() {
+    //        $http.post("api/login", self.user).then(function(response) {
+    //            //self.loginMessage = JSON.stringify(response);
+    //            self.loginMessage = response.data.msg;
+    //        });
+    //    }
+    //}]);
+
+    angular.module("notesApp", []).config(["$httpProvider", function($httpProvider) {
+        var self = this;
+        // headers.pose["Content-Type"] tells the $http that we don't post a json Obj
+        // But a String like "key1=value1&key2=value2"
+        $httpProvider.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+
+        // This part change data string {"username":"...", "password", "..."} to
+        // username=...&password=...
+        $httpProvider.defaults.transformRequest.push(function(data) {
+            var requestStr = "";
+            if(data) {
+                var dataObj = JSON.parse(data);
+                for(var key in dataObj) {
+                    if( requestStr == "" ) {
+                        requestStr = key + "=" + dataObj[key];
+                    }
+                    else {
+                        requestStr += "&" + key + "=" + dataObj[key];
+                    }
+                }
+            }
+            return requestStr;
+        });
+    }]);
+
+    angular.module("notesApp").controller("MainCtrl", ["$http", function($http) {
+        var self = this;
+        self.user = {};
+        self.loginMessage = "";
+        self.login = function() {
+            $http.post("api/login", self.user).then(function(response) {
+                self.loginMessage = response.data.msg;
+            });
+        }
+    }]);
+</script>
+</html>
