@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Select Disabled</title>
+    <script src='../angular.min.js'></script>
+</head>
+<body>
+	<div ng-app="myApp">
+        <div ng-controller="MainCtrl as ctrl" ng-init="location = 'India'">
+            <select ng-model="ctrl.location" ng-disabled="ctrl.enabled">
+                <option value="USA">USA</option>
+                <option value="India">India</option>
+                <option value="Other">None of the above</option>
+            </select>
+            <button ng-click="ctrl.toogle()">Click</button>
+        </div>
+    </div>
+	<script type='text/javascript'>		
+        angular.module("myApp", []).controller("MainCtrl", [function() {
+			var self = this;
+            self.location = "India";
+            self.enabled = false;            
+            self.toogle = function() {
+                self.enabled = !self.enabled;
+                console.log(self.enabled);
+            };
+		}]);	
+	</script>
+</body>
+</html>
