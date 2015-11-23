@@ -2,56 +2,71 @@
 <html>
 <head>
     <title>Filters in Action</title>
-    <script
-        src="../angular.min.js">
-    </script>
+    <script src="../angular.min.js"></script>
 </head>
 <body ng-app="filtersApp">
     <div ng-controller="FilterCtrl as ctrl">
-        <button ng-click="ctrl.currentFilter = 'string'">Filter with String</button>
-        <button ng-click="ctrl.currentFilter = 'object'">Filter with Object</button>
-        <button ng-click="ctrl.currentFilter = 'function'">Filter with Function</button>
-        Filter Text<input type="text" ng-model="ctrl.filterOptions['string']">
-        Show Done Only<input type="checkbox" ng-model="ctrl.filterOptions['object'].done">
+        <button ng-click="ctrl.currentFilter = 'String'">String Filter</button>
+        <button ng-click="ctrl.currentFilter = 'Object'">Object Filter</button>
+        <button ng-click="ctrl.currentFilter = 'Function'">Function Filter</button>
+        <input type="text" ng-model="ctrl.filterOptions['String']"><br/>
+        <br/>
+        <input type="checkbox" ng-click="ctrl.isSorted()">Sort<br/>
+        <input type="checkbox" ng-click="ctrl.format()">Currency<br/>
+        {{ ctrl.filterOptions[ctrl.currentFilter] }}<br/>
         <ul>
-            <li ng-repeat="note in ctrl.notes |
-                filter:ctrl.filterOptions[ctrl.currentFilter] |
-                orderBy:ctrl.sortOrder |
-                limitTo:5"
-            >
-                {{note.label}} - {{note.type}} - {{note.done}}
+            <li ng-repeat="note in ctrl.notes | filter:ctrl.filterOptions[ctrl.currentFilter] | orderBy:ctrl.orderBy | limitTo:6 ">
+                <!--{{ note.label }}, {{ note.money | (ctrl.isCurrency ? currency : "") }}-->
+                {{ note.label }}, {{ note.money | currency }}
             </li>
         </ul>
     </div>
 </body>
 <script type="text/javascript">
-angular.module("filtersApp", []).controller("FilterCtrl", [function() {
-    var self = this;
-    self.notes = [
-        {"label": "FC Todo", "type": "chore", done: false},
-        {"label": "FT Todo", "type": "task", done: false},
-        {"label": "FF Todo", "type": "fun", done: true},
-        {"label": "SC Todo", "type": "chore", done: true},
-        {"label": "ST Todo", "type": "task", done: true},
-        {"label": "SF Todo", "type": "fun", done: true},
-        {"label": "TC Todo", "type": "chore", done: false},
-        {"label": "TT Todo", "type": "task", done: false},
-        {"label": "TF Todo", "type": "fun", done: false}        
-    ];
-    this.sortOrder = ["+type", "-label"];
-    this.filterOptions = {
-        "string": "",
-        "object": {"done": false, "label": "C"},
-        "function": function(note) {
-            if( note.type === "task" && note.done === false ) {
-                return true;
+    angular.module("filtersApp", []).controller("FilterCtrl", [function() {
+        var self = this;
+        self.currentFilter = 'String';
+        self.notes = [
+            {"label": "CF Todo", "money": "1000", "type": "chore", "done": false},
+            {"label": "CT Todo", "money": "1000", "type": "chore", "done": true},
+            {"label": "TF Todo", "money": "1000", "type": "task", "done": false},
+            {"label": "FT Todo", "money": "1000", "type": "fun", "done": true},
+            {"label": "FF Todo", "money": "1000", "type": "fun", "done": false},
+            {"label": "TT Todo", "money": "1000", "type": "task", "done": true},
+            {"label": "CF Todo", "money": "1000", "type": "chore", "done": false},
+            {"label": "CT Todo", "money": "1000", "type": "chore", "done": true},
+            {"label": "TF Todo", "money": "1000", "type": "task", "done": false},
+            {"label": "FT Todo", "money": "1000", "type": "fun", "done": true},
+            {"label": "FF Todo", "money": "1000", "type": "fun", "done": false},
+            {"label": "TT Todo", "money": "1000", "type": "task", "done": true},
+        ];
+        self.orderBy = ['+type', '-label'];
+        self.filterOptions = {
+            "String": "",
+            "Object": {"done": false, "label": "C"},
+            "Function": function(note) {
+                return note.type == "task" && note.done == true;
+            }
+        };
+        self.isSorted = function() {
+            if( self.orderBy == null ) {
+                self.orderBy = ['+type', '-label'];
             }
             else {
-                return false;
+                self.orderBy = null;
             }
         }        
-    }
-    this.currentFilter = "string";
-}]);
+        self.currency = currency;
+        self.isCurrency = true;
+        self.format = function() {
+            self.isCurrency = !self.isCurrency;
+        }
+    }]);
+
+    angular.module("filtersApp").filter("myFilter", ['currencyFilter', function(currencyFilter) {
+        return function(amount) {            
+            return currencyFilter(amount);
+        };
+    }]);
 </script>
 </html>
