@@ -1,0 +1,58 @@
+<html>
+<head>
+    <title>AngularJS Routing</title>
+    <script src="scripts/vendors/angular.js"></script>
+    <script src="scripts/vendors/angular-route.js"></script>
+</head>
+<body ng-app="routingApp" ng-controller="TestCtrl">
+    <h2>AngularJS Routing Example</h2>
+    <ul>
+        <li><a href="#/">Default Route</a></li>
+        <li><a href="#/second">Second Route</a></li>
+        <li><a href="#/login">Login Route</a></li>
+        <li><a href="#/abcdefg">Non existent Route</a></li>
+    </ul>
+    <div ng-view></div>
+</body>
+<script>
+    //var app = angular.module("routingApp",["ngRoute"]);
+    angular.module("routingApp",["ngRoute"]).value("Constant", {"MAGIC_NUMBER": 42});
+    
+    //It is important to know how to pass value between Value, Controller and Config.
+    angular.module("routingApp").controller("TestCtrl", ["Constant", function(Constant) {
+        console.log(Constant);
+    }]);
+    
+    angular.module("routingApp").config(["$routeProvider", function($routeProvider) {
+        $routeProvider.when("/", {
+            "template": "<h5>This is the default route</h5>"
+        });
+        $routeProvider.when("/second", {
+            "template": "<h5>This is the second route</h5>"
+        });
+        //immediate and async are not keyword, you can replace it with any other string
+        $routeProvider.when("/login", {
+            "template": "<h5>Logging Test</h5>",
+            "resolve": {
+                "immediate": ["Constant", function(Constant) {
+                    return Constant.MAGIC_NUMBER * 4;
+                }],
+                "async": ["$http", function($http) {
+                    var loginInfo = {
+                        "username": "admin",
+                        "password": "admin"
+                    };
+                    return $http.post("/api/login", loginInfo);
+                }]
+            },
+            "controller": ["$log", "immediate", "async", function($log, immediate, async) {
+                $log.log("Immediate is ", immediate);
+                $log.log("Server returned for async ", async);
+            }]
+        });
+        $routeProvider.otherwise({
+            "redirectTo": "/"
+        });
+    }]);
+</script>
+</html>
