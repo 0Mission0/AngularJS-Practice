@@ -1,5 +1,72 @@
-<!-- File: chapter10/routing-example/app/index.html -->
 <html>
+<head>
+    <title>FIFA Teams</title>
+    <!--<link rel="stylesheet" href="styles/bootstrap.css">-->
+    <!--<link rel="stylesheet" href="styles/main.css">-->
+    <script src="scripts/vendors/jquery-1.11.1.js"></script>
+    <script src="scripts/vendors/angular.js"></script>
+    <script src="scripts/vendors/angular-route.js"></script>
+</head>
+<body ng-app="fifaApp" class="landing">
+    <div class="top-bar" ng-controller="MainCtrl as mainCtrl">
+        <div class="pull-left">
+            <span><a href="#/">FIFA TEAMS</a></span>
+        </div>
+        <div class="pull-right">
+            <!-- If you type <a><a>, it will be a very Difficult to detect bug,  -->
+            <span ng-hide="mainCtrl.userService.isLoggedIn"><a href="#/">Login</a></span>
+            <span ng-show="mainCtrl.userService.isLoggedIn"><a href="#/">Logout</a></span>
+        </div>
+    </div>
+    <div ng-view>
+    </div>
+</body>
+<script>
+var app = angular.module("fifaApp", ["ngRoute"]);
+
+app.controller("MainCtrl", [function() {
+}]);
+
+app.config(function($routeProvider) {
+    $routeProvider.when("/", {
+        "template": "<h1>Index page</h1>"
+    });
+    $routeProvider.when("/login", {
+        "templateUrl": "views/login.html",
+    });
+    $routeProvider.when("/test", {
+        "templateUrl": "views/test.html",
+    });
+    $routeProvider.when("/team/:code", {
+        "template": "<h1>Login page</h1>",
+        "controller": ["$log", "$routeParams", function($log, $routeParams) {
+            console.log($routeParams.code);
+        }]
+    });
+    $routeProvider.otherwise({
+        "redirectTo": "/"
+    });
+});
+
+app.controller("LoginCtrl", [function() {
+    this.user = {
+        "username": "",
+        "password": ""
+    };
+    this.test = function() {
+        console.log("test.html " + this.user.username, this.user.password);
+    };
+    this.login = function() {
+        console.log("login.html " + this.user.username, this.user.password);
+    };
+}]);
+</script>
+<!--<script src="scripts/app.js"></script>-->
+<!--<script src="scripts/services.js"></script>-->
+<!--<script src="scripts/controllers.js"></script>-->
+</html>
+
+<!--<html>
 <head>
   <title>FIFA Teams</title>
   <link rel="stylesheet" href="styles/bootstrap.css">
@@ -14,9 +81,9 @@
       <span ng-hide="mainCtrl.userService.isLoggedIn">
         <a href="#/login">Login</a>
       </span>
-      <span ng-show="mainCtrl.userService.isLoggedIn">
+      <span ng-show="mainCtrl.userService.isLoggedIn">-->
         <!-- server-side route, not a client-side route -->
-        <a href="/api/logout">Logout</a>
+        <!--<a href="/api/logout">Logout</a>
       </span>
     </div>
   </div>
@@ -31,4 +98,4 @@
   <script src="scripts/services.js"></script>
   <script src="scripts/controllers.js"></script>
 </body>
-</html>
+</html>-->
