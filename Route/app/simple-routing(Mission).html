@@ -16,7 +16,24 @@
     <div ng-view></div>
 </body>
 <script>
-    angular.module("routingApp", ['ngRoute']).config(['$routeProvider', function($routeProvider) {
+    //Create A service
+    angular.module("routingApp", ["ngRoute", "$http"]).service("$UserService", ["$http", function UserService($http) {
+        var self = this;
+        self.isLogged = false;
+        self.session = function() {
+            return self.isLogged;
+        };    
+        self.login = function(user) {
+            var promise = $http.post('/api/login', user);
+            promise.then(function(response) {
+                self.isLogged = true;
+            });
+            return promise;
+        };
+    }]);
+
+    //Setting route config
+    angular.module("routingApp").config(['$routeProvider', function($routeProvider) {
         $routeProvider.when("/", {
             "template": "<h5>This is the default route</h5>"
         });
@@ -33,16 +50,24 @@
             "redirectTo": "/"
         });
     }]);
-    angular.module("routingApp").controller("LoginCtrl", [function() {
-        this.user = {
+    
+    //New Controller
+    angular.module("routingApp").controller("LoginCtrl", ["$UserService", function($UserService) {
+        var self = this;
+        self.user = {
             "username": "",
             "password": ""
         };
-        this.test = function() {
-            console.log("test.html " + this.user.username, this.user.password);
+        self.test = function() {
+            var promise = $UserService.login(self.user);
+            promise.then(function(success){
+                console.log("test.html Success: " + self.user.username, self.user.password);
+            }, function(error){
+                console.log("test.html Error: " + self.user.username, self.user.password);
+            });            
         };
-        this.login = function() {
-            console.log("login.html " + this.user.username, this.user.password);
+        self.login = function() {
+            console.log("login.html " + self.user.username, self.user.password);
         };
     }]);
 </script>
