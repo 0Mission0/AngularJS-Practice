@@ -43,7 +43,7 @@ app.config(function($routeProvider) {
                 self.teams = response.data;
             });
         }],
-        "controllerAs": "teamListCtrl"
+        "controllerAs": "teamListCtrl",
     });
     $routeProvider.when("/login", {
         "templateUrl": "views/login.html",
@@ -73,13 +73,13 @@ app.config(function($routeProvider) {
     //        var promise = FifaService.getTeamDetails($routeParams.code);
     //        self.team = {};
     //        promise.then(function(response) {
-    //            self.team = response.data;                
+    //            self.team = response.data;
     //        }, function(error) {
     //            //If failed, return to login page.
     //            $location.path("/login");
     //        });
     //    }],
-    //    "controllerAs": "teamDetailsCtrl"        
+    //    "controllerAs": "teamDetailsCtrl"
     //});
     $routeProvider.when("/team/:code", {
         "templateUrl": "views/team_details.html",
@@ -88,7 +88,7 @@ app.config(function($routeProvider) {
             var promise = FifaService.getTeamDetails($routeParams.code);
             self.team = {};
             promise.then(function(response) {
-                self.team = response.data;                
+                self.team = response.data;
             }, function(error) {
                 //If failed, return to login page.
                 $location.path("/login");
@@ -96,51 +96,18 @@ app.config(function($routeProvider) {
         }],
         "controllerAs": "teamDetailsCtrl",
         resolve: {
-            auth: ['$q', '$location', 'UserService',
+            auth: ["$q", "$location", "UserService",
             function($q, $location, UserService) {
-                return UserService.session().then(
-                function(success) {},
-                function(err) {
-                    $location.path('/login');
-                    $location.replace();
-                    return $q.reject(err);
-                });
+                var isLogged = UserService.session();
+                if( isLogged == false ) {
+                    $location.path("/login");
+                    $location.replace();                    
+                    $q.reject("Authentication Failed!");
+                }
             }]
         }
-    });        
+    });
     $routeProvider.otherwise({
         "redirectTo": "/"
     });
 });
-
-/*angular.module("fifaApp", ["ngRoute"])
-  .config(function($routeProvider) {
-
-    $routeProvider.when("/", {
-      templateUrl: "views/team_list.html",
-      controller: "TeamListCtrl as teamListCtrl"
-    })
-    .when("/login", {
-      templateUrl: "views/login.html"
-    })
-    .when("/team/:code", {
-      templateUrl: "views/team_details.html",
-      controller:"TeamDetailsCtrl as teamDetailsCtrl",
-      resolve: {
-        auth: ["$q", "$location", "UserService",
-          function($q, $location, UserService) {
-             return UserService.session().then(
-               function(success) {},
-               function(err) {
-                  $location.path("/login");
-                  $location.replace();
-                  return $q.reject(err);
-             });
-        }]
-      }
-    });
-    $routeProvider.otherwise({
-      redirectTo: "/"
-    });
-  });
-*/

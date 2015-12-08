@@ -1,0 +1,75 @@
+<!-- http://localhost:8000/loginTest.html -->
+<html>
+<head>
+    <title>AngularJS Promise example</title>
+    <script src="scripts/vendors/angular.js"></script>
+</head>
+<body ng-app="testApp" ng-controller="TestCtrl as ctrl">
+    <form ng-submit="ctrl.submit()">
+        <input type="text" ng-model="ctrl.user.username" />
+        <input type="password" ng-model="ctrl.user.password" />
+        <input type="submit" value="Submit" />
+    </form>
+</body>
+<script>
+    var app = angular.module("testApp", []);
+    app.service("UserService", ["$http", "$timeout", function UserService($http, $timeout) {
+        var self = this;
+        self.login = function(user) {
+            // Similiar codes, but this part of codes define what the service should do
+            // when the promise finish.
+            return $http.post("/api/login", user).then(function(response) {
+                console.log("Step2");
+                console.log(response);
+                return response;
+            });
+            //return $http.post("/api/login", user)
+        };
+    }]);
+    app.controller("TestCtrl", ["UserService", function(UserService) {
+        var self = this;
+        self.user = {
+            "username": "admin",
+            "password": "admin"
+        };
+        self.submit = function() {
+            var promise = UserService.login(self.user);
+            console.log("Step1");
+            console.log(promise);
+            promise.then(function(response) {
+                console.log("Step3");
+                console.log(response);
+            }, function(error) {
+                console.log("Step4");
+                console.log(error);
+            });
+        };
+    }]);
+</script>
+<!--
+首先，讓我們看一下promiseTest.html
+其執行順序為Step1 (停頓) Step2 Step3
+換句話說，Controller收到promise之後就繼續執行他的動作。
+等http.post完成，
+先執行Service定義的inner function(Step2)才回到自定義的inner function(Step3)。
+
+同樣的道理也發生在http.post失敗的時候。
+程式一樣會在收到promise之後就繼續執行他的動作。
+等http.post失敗，
+先執行Service定義的inner function(這邊沒定義)，才回到自定義的inner function(Step4)。
+
+promise的行為大致上便是如此運行。
+
+另外，附註一下，其實
+return $http.post("/api/login", user)
+return $http.post("/api/login", user).then(function(response) {
+    ......
+    return response;
+});
+兩段Code當下回傳的是一樣的東西，皆是promise。
+只是後者會在promise成功執行後，多作一段處理，並且把結果傳到串接的promise中(Step3)
+
+當然，當你把return response;(Line 24)註解後，串接的promise中(Step3)就收不到response了。
+因此Step3會印出undefined。
+-->
+</html>

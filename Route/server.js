@@ -53,8 +53,6 @@ passport.use(new LocalStrategy(function(username, password, done) {
   }
 }));
 
-
-
 app.use('/', serverStatic(__dirname + '/app'));
 
 var isLoggedIn = function(req, res, next) {
@@ -72,14 +70,22 @@ app.get('/api/team', function(req, res) {
 });
 
 app.post('/api/login', function(req, res, next) {
-  passport.authenticate('local', function(err, user) {
-    if (err) {return next(err); }
-    if (!user) { return res.send({loginStatus: false, msg: 'Unable to login'}, 400); }
-    req.logIn(user, function(err) {
-      if (err) { return res.send({msg: 'Error logging in', err: err}, 500); }
-      return res.send({loginStatus: true, user: user});
-    });
-  })(req, res, next);
+    setTimeout(function() {
+        passport.authenticate('local', function(err, user) {
+            if (err) {
+                return next(err);
+            }
+            if (!user) {
+                return res.send({loginStatus: false, msg: 'Unable to login'}, 400);
+            }
+            req.logIn(user, function(err) {
+                if (err) {
+                    return res.send({msg: 'Error logging in', err: err}, 500);
+                }
+                return res.send({loginStatus: true, user: user});
+            });
+        })(req, res, next);
+    }, 1500);
 });
 
 app.get('/api/session', isLoggedIn, function(req, res) {

@@ -1,0 +1,108 @@
+<!-- http://localhost:8000/loginTest.html -->
+<html>
+<head>
+    <title>AngularJS Promise example</title>
+    <script src="scripts/vendors/angular.js"></script>
+</head>
+<body ng-app="testApp" ng-controller="TestCtrl as ctrl">
+    <form ng-submit="ctrl.submit()">
+        <input type="text" ng-model="ctrl.user.username" />
+        <input type="password" ng-model="ctrl.user.password" />
+        <input type="submit" value="Submit" />
+    </form>
+    <div ng-controller="AlertCtrl as alertCtrl">
+        <button ng-click="alertCtrl.alert()">Alert</button>
+    </div>
+</body>
+<script>
+    var app = angular.module("testApp", []);
+
+    app.service("UserService", ["$q", "$http", "$timeout", function UserService($q, $http, $timeout) {
+        var self = this;
+        self.login = function(user) {
+            return $http.post("/api/login", user).then(function(response) {
+                //Without $q, server will get ths same response as controller get.
+                //console.log("Step2");
+                //console.log(response);
+                //return response;
+
+                //But with $q, we can customise the result of async by ourselves.
+                //return $q.reject("TEST");
+
+                //Or Create Our own asyncrous action
+                var defer = $q.defer();
+                $timeout(function() {
+                    return defer.resolve("Test");
+                }, 3*1000);
+                return defer.promise;
+            });
+        };
+    }]);
+
+    app.controller("TestCtrl", ["UserService", function(UserService) {
+        var self = this;
+        self.user = {
+            "username": "admin",
+            "password": "admin"
+        };
+        self.submit = function() {
+            var promise = UserService.login(self.user);
+            console.log("Step1");
+            console.log(promise);
+            promise.then(function(response) {
+                console.log("Step3");
+                console.log(response);
+            }, function(error) {
+                console.log("Step4");
+                console.log(error);
+            });
+        };
+    }]);
+
+    app.controller("AlertCtrl", ["$q", "$timeout", function($q, $timeout) {
+        var self = this;
+        self.alert = function() {
+            var defer = $q.defer();
+            console.log("Click");
+            defer.promise.then(
+                function(success) {
+                    console.log("......", success);
+                },
+                function(failed) {
+                    console.log("......", failed);
+                }
+            );
+            $timeout(function() {
+                var randomInt = Math.random() * 100;
+                if( randomInt < 50 ) {
+                    return defer.resolve("Success");
+                }
+                else {
+                    return defer.reject("Failed");
+                }
+            }, 1000);
+        };
+    }]);
+</script>
+<!--
+接著，$q又是什麼東西呢，$q其實就是讓我們自已定義promise(Asyncrounous function)的方法。
+首先，先看一下原程式，當$http.post成功時，step2跟step3一定會接連被執行，
+但這樣就失去了些彈性跟意義，我們能不能在step2成功執行後，
+拒絕回傳成功，改讓controller執行Step4？
+
+可以，改成return $q.reject("……")即可。
+$q.reject可以讓串接的promise call-back function回傳他們想回報的錯誤，中斷整個串接的promise。
+
+至於怎麼定義自已的promise，我們可以透過$q.defer去產生defferedObject。
+var defer = $q.defer();
+$timeout(function() {
+    return defer.resolve("Test");
+}, 3*1000);
+return defer.promise;
+透過回傳defer.promise，跟defer.resolve("Test")、defer.reject("Test")的操作，
+自定義promise就不是什麼問題了。
+
+最後，讓我們用promise跟$q定義一個簡單的Asyncrounous function。
+點擊按鈕後，1秒後show一個Success or Failed message。
+-->
+</html>
