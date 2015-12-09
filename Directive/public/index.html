@@ -1,0 +1,73 @@
+<!-- File: chapter11/directive-with-scope/index.html -->
+<html>
+<head>
+    <title>Stock Market App</title>
+</head>
+<body ng-app="StockMarketApp">
+    <div ng-controller="MainCtrl as mainCtrl">
+        <h3>List of Stocks</h3>
+        <div ng-repeat="stock in mainCtrl.stocks">
+            <!--<div stock-widget ></div>-->
+            <!--<div stock-widget-link ></div>-->
+            <div stock-widget-link stock-data="stock"></div>
+        </div>
+        <button ng-click="mainCtrl.changeAllStocks()">Chnage All Stock From Controller</button>
+        <button ng-click="mainCtrl.changeFirstStock()">Chnage First Stock From Controller</button>
+    </div>
+<script src="../angular.min.js"></script>
+<script>
+var app = angular.module("StockMarketApp", []);
+app.controller("MainCtrl", [function() {
+    var self = this;
+    self.stocks = [
+        {name: "First Stock", price: 100, previous: 220},
+        {name: "Second Stock", price: 140, previous: 120},
+        {name: "Third Stock", price: 110, previous: 110},
+        {name: "Fourth Stock", price: 400, previous: 420}
+    ];
+    //self.getChange = function(stock) {
+    //    return Math.ceil(((stock.price - stock.previous) / stock.previous) * 100);
+    //};
+    self.changeAllStocks = function() {
+        for(var i = 0; i < 4; i++) {
+            self.stocks[i] = {
+                name: "Controller Stock", price: 200, previous: 250
+            };
+        }
+    };
+    // When you click directiveButton, changeFirstStock will not work.
+    self.changeFirstStock = function() {
+        self.stocks[0].name = "Changed First Stock";
+    }
+}]);
+
+app.directive("stockWidget", [function() {
+    return {
+        "templateUrl": "stock.html",
+        "restrict": "A"
+    };
+}]);
+
+app.directive("stockWidgetLink", [function() {
+    return {
+        "templateUrl": "stock_new.html",
+        "restrict": "A",
+        "scope": {
+            "stockData" : "="
+        },
+        "link": function($scope, $element, $attrs) {
+            $scope.getChange = function(stock) {
+                return Math.ceil(((stock.price - stock.previous) / stock.previous) * 100);
+            };
+            $scope.changeStock = function() {
+                $scope.stockData = {
+                    name: "Directive Stock", price: 500, previous: 200
+                };
+            };
+        }
+    };
+}]);
+
+</script>
+</body>
+</html>
