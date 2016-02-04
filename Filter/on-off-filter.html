@@ -1,0 +1,36 @@
+<!-- File: chapter8/filter-example-1.html -->
+<html>
+<head>
+	<title>Filters by condition</title>
+</head>
+<body ng-app="filtersApp">
+
+<div ng-controller="FilterCtrl as ctrl" ng-init="font = {style: 'uppercase'}">
+    <div>
+        UpperCase or LowerCase:
+        <input type="radio" name="case" ng-model="font.style" value="uppercase">
+        <input type="radio" name="case" ng-model="font.style" value="lowercase">
+	</div>
+	<div>
+		Style: {{ font.style }}<br/>
+		<span ng-switch on="font.style">
+			<span ng-switch-when="lowercase">
+				Name: {{ ctrl.data.name | lowercase }}
+			</span>
+			<span ng-switch-default="uppercase">
+				Name: {{ ctrl.data.name | uppercase }}
+			</span>
+		</span>
+	</div>
+</div>
+<script src="../angular.min.js"></script>
+<script type="text/javascript">
+	angular.module("filtersApp", []).controller("FilterCtrl", [function() {
+		var self = this;	
+		self.data = {
+			"name": "mission jiang"			
+		};
+	}]);	
+</script>
+</body>
+</html>
