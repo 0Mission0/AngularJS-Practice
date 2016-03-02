@@ -1,0 +1,18 @@
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js">
+</script>
+<body ng-app ng-controller="Test">
+<h2>My Favorite Cities</h2>
+<div ng-repeat="city in ['111', '222', '333', '444', '555']">
+	{{ $index + 1 }}.{{ city }} 
+	{{ $first ? 'This is first city' : '' }}
+	{{ $last ? 'This is last city' : '' }}
+</div>
+</body>
+<script>
+var module = angular.module("Test", []);
+var controller = module.controller("")
+</script>
+</html>
+
+<!-- {{ $last ? "<br/>This is last city<br/>" : "" }} -->
