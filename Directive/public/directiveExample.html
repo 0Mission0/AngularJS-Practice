@@ -35,39 +35,41 @@ div {
 <h2>AngularJS Socks</h2>
 <p>Keep warm this winter with our 100% wool, 100% cool, AngularJS socks!</p>
 <span color-list><span>
-<!--<div color-list colors="colorsArray"><div>-->
 
 </body>
 <script>
 var myApp = angular.module("myApp", []);
 var myCtrl = myApp.controller("myCtrl", ["$scope", function($scope) {
-	//$scope.test = "Test";
-	//$scope.toogle = function() {
-	//	$scope.isHidden = !$scope.isHidden;
-	//};
+	$scope.colorsArray = ["red", "green", "blue", "purple", "olive"];
 }]);
 
 var direcitve = myApp.directive("colorList", [function() {
 	return {
 		restrict: "AE",
-		template: 	"<button ng-click='showHideColors()' type='button'>{{ isHidden ? 'Show Available colors' : 'Hide Available colors' }}</button>" + 
-					"<div id='red' ng-hide='isHidden'>Red</div>" +
-					"<div id='green' ng-hide='isHidden'>Green</div>" +
-					"<div id='blue' ng-hide='isHidden'>Blue</div>" +
-					"<div id='purple' ng-hide='isHidden'>Purple</div>" + 
-					"<div id='gray' ng-hide='isHidden'>Dark Slate Gray</div>" +
-					"<div id='olive' ng-hide='isHidden'>Olive</div>",
-					
+		//template: 	"<button ng-click='showHideColors()' type='button'>{{ isHidden ? 'Show Available colors' : 'Hide Available colors' }}</button>" + 
+		//			"<div id='red' ng-hide='isHidden'>Red</div>" +
+		//			"<div id='green' ng-hide='isHidden'>Green</div>" +
+		//			"<div id='blue' ng-hide='isHidden'>Blue</div>" +
+		//			"<div id='purple' ng-hide='isHidden'>Purple</div>" + 
+		//			"<div id='gray' ng-hide='isHidden'>Dark Slate Gray</div>" +
+		//			"<div id='olive' ng-hide='isHidden'>Olive</div>",
+		
+		template: "<button ng-click='showHideColors()' type='button'>{{ isHidden ? 'Show Available Colors' : 'Hide Available Colors'}}</button>" +
+				  "<div ng-hide='isHidden'></div>",
+				  
 		link: function($scope, $element) {
 			$scope.isHidden = true;
 			$scope.showHideColors = function() {
-				$scope.isHidden = !$scope.isHidden;
+				 $scope.isHidden = !$scope.isHidden;
 			}
-			//var colorContainer = $element.find("div");
-			//angular.forEach($scope.$parent.colorArray, function(color) {
-			//	var appendString = "<div id='"+ color +"' ng-hide='isHidden'>" + color + "</div>";
-			//	colorContainer.append(appendString);
-			//});
+			//	//Is there any way to get the element by id?
+			var colorContainer = $element.find("div");
+			angular.forEach($scope.colorsArray, function(color) {
+				var colorElement = "<div id='" + color + "' ng-hide='isHidden'>" + color + "</div>";
+				colorContainer.append(colorElement);
+			});
+			// What is $scope.$parent???
+			//console.log($scope.$parent);			
 		}
 	}
 }]);
