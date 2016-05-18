@@ -1,0 +1,129 @@
+<html>
+<head>
+<script src="angular.min.js"></script>
+<style>
+body {
+	font: normal 16px/1.4 Georgia;
+}
+input:not([type='checkbox']), select {
+	width: 250px;
+}
+select, input {
+	padding: 5px;
+	margin-top: 12px;
+	font-family: inherit;
+}
+input[type='submit'] {
+	width: 264px;
+}
+form span {
+	color: red;
+}
+input[name='email'].ng-dirty.ng-invalid {
+	color: red;
+}
+input[name='email'].ng-dirty.ng-valid {
+	color: green;
+}
+
+</style>
+</head>
+<body ng-app="myApp">
+<div ng-controller="MyController">	
+	<div ng-show="MyForm.$pristine">Form Input has not been started.</div>
+	<div ng-show="MyForm.$dirty">Form Input has been started.</div>
+	<form name="MyForm" ng-submit="register()" novalidate>
+		<input type="text" placeholder="First Name" name="firstName" ng-model="person.firstName" required />
+		<span ng-show="firstNameInvalid"><br/>Please enter a valid First name</span>
+		<br/>
+		<input type="text" placeholder="Last Name" name="lastName" ng-model="person.lastName" required />
+		<span ng-show="lastNameInvalid"><br/>Please enter a valid Last name</span>
+		<br/>
+		<input type="email" placeholder="Email" name="email" ng-model="person.email" required />
+		<span ng-show="emailInvalid"><br/>Please enter a valid Email</span>
+		<br/>
+		<!-- There is an error in the book that the person.channel is not working.  -->
+		<!--<select name="channels" ng-model="person.channel" ng-options="obj.value as obj.label for obj in person.channels">-->
+		<select name="channels" ng-model="selectedChannel" ng-options="obj.value as obj.label for obj in person.channels">
+			<option value="">Where did you hear about us?</option>
+		</select>
+		<span ng-show="channelsInvalid"><br/>Please tell us where you heard about us</span>
+		<br/>		
+		<input type="checkbox" name="letterOption" ng-model="person.letterOption" id="letterOption" value="letterOption" />
+		<label for="letterOption">Recieve monthly newsletter</label>
+		<br/>		
+		<input type="submit" value="Register" />
+	</form>
+	<div ng-show="doShow">Thank you for taking the time to register!</div>	
+	<p>
+		First name is: {{ person.firstName }} <br/>
+		Street name is: {{ person.address.street }} <br/>
+	</p>
+</div>
+</body>
+<script>
+// 注意，其實整段程式應該沒有宣告MyForm變數，但AngularJS中可以怎麼應用，這點要特別留意
+var myApp = angular.module("myApp", []);
+var myCtrl = myApp.controller("MyController", ["$scope", function($scope) {
+	$scope.person = {
+		//firstName: "Jimmy",
+		age: 21,
+		address: {
+			street: "16 Somewhere Drive",
+			suburb: "Port Kennedy",
+			state: "Western Australia"
+		},
+		// Notice that in JSON the array declaration is varName : []
+		channels : [
+			{ "value": "television",   "label": "Television" },
+			{ "value": "radio", 	   "label": "Radio" },
+			{ "value": "social-media", "label": "Social Media"},
+			{ "value": "other", 	   "label": "Other"}
+		]
+	};
+	
+	$scope.showFirstName = function() {
+		if(angular.isDefined($scope.person.firstName)) {
+			alert("Name is: " + $scope.person.firstName);
+		}
+		else {
+			alert("Name is empty, please enter a value.");
+		}		
+	};
+	
+	$scope.register = function() {
+		$scope.firstNameInvalid = false;
+		$scope.lastNameInvalid = false;
+		$scope.emailInvalid = false;
+		$scope.channelsInvalid = false;
+		
+		// Why I can use $scope.MyForm?
+		if(!$scope.MyForm.firstName.$valid) {
+			$scope.firstNameInvalid = true;
+		}
+		
+		if(!$scope.MyForm.lastName.$valid) {
+			$scope.lastNameInvalid = true;
+		}
+		
+		if(!$scope.MyForm.email.$valid) {
+			$scope.emailInvalid = true;
+		}
+		
+		if( $scope.selectedChannel == null ) {
+			$scope.MyForm.channels.$valid = false;
+		}
+		
+		if(!$scope.MyForm.channels.$valid) {
+			$scope.channelsInvalid = true;
+		}
+		
+		// Except the input field has its own valid, the form also has one specific valid variable
+		if($scope.MyForm.$valid) {
+			$scope.doShow = true;
+		}
+		
+	}
+}]);
+</script>
+</html>
