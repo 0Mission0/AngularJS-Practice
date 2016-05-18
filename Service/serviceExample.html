@@ -1,0 +1,37 @@
+<html ng-app="myapp">
+<head>
+	<title>Angular Services</title>
+	<script src="angular.min.js"></script>
+</head>
+<body>
+	<div ng-controller="windowCtrl">
+		<p>Window width: {{ winWidth }}px</p>
+	</div>
+	<div ng-controller="locationCtrl">
+		<p>The URL is: {{ url }}</p>
+		<ul>
+			<li>{{ protocol }}</li>
+			<li>{{ host }}</li>
+			<li>{{ port }}</li>
+		</ul>
+	</div>
+	<div ng-controller="documentCtrl">
+		<p>{{ docTitle }}</p>
+	</div>
+</body>
+<script>
+var module = angular.module("myapp", []);
+module.controller("windowCtrl", function($scope, $window) {
+	$scope.winWidth = $window.innerWidth;	
+})
+module.controller("locationCtrl", function($scope, $location) {
+	$scope.url = $location.absUrl();
+	$scope.protocol = $location.protocol();
+	$scope.host = $location.host();
+	$scope.port = $location.port();	
+});
+module.controller("documentCtrl", function($scope, $document) {
+	$scope.docTitle = $document[0].title;	
+});
+</script>
+</html>
